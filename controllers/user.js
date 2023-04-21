@@ -40,4 +40,30 @@ const getUserDetails = async (req, res) => {
   });
 };
 
-module.exports = { getAllUsers, register, specialFunc, getUserDetails };
+const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+
+  res.json({
+    success: true,
+    message: "updated",
+  });
+};
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findById(id);
+
+  res.json({
+    success: true,
+    message: "deleted",
+  });
+};
+
+module.exports = {
+  getAllUsers,
+  register,
+  specialFunc,
+  getUserDetails,
+  updateUser,
+  deleteUser,
+};

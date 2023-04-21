@@ -7,8 +7,8 @@ dotenv.config({
   path: "./data/config.env",
 });
 
-app.use(express.json()); //for post json data
-app.use("/users", userRouter);
+app.use(express.json());
+app.use("/users", userRouter); // /users yha esilea diya gya hai q ki ./routes/user.js mein jitne bhi route hai usme /user default rahe
 
 app.get("/", (req, res) => {
   res.send("Nice Working");
