@@ -1,5 +1,6 @@
 const express = require("express");
 const userRouter = require("./routes/user.js");
+const TaskRouter = require("./routes/task.js");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const app = express();
@@ -10,7 +11,9 @@ dotenv.config({
 
 app.use(express.json());
 app.use(cookieParser());
-app.use("/api/v1/users", userRouter); // /users yha esilea diya gya hai q ki ./routes/user.js mein jitne bhi route hai usme /user default rahe
+// /users yha esilea diya gya hai q ki ./routes/user.js mein jitne bhi route hai usme /user default rahe
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/task", TaskRouter);
 
 app.get("/", (req, res) => {
   res.send("Nice Working");
