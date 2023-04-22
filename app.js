@@ -3,6 +3,7 @@ const userRouter = require("./routes/user.js");
 const TaskRouter = require("./routes/task.js");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
+const middleware = require("./middleware/error.js");
 const app = express();
 
 dotenv.config({
@@ -18,5 +19,8 @@ app.use("/api/v1/task", TaskRouter);
 app.get("/", (req, res) => {
   res.send("Nice Working");
 });
+
+//using error middleware
+app.use(middleware.errorMiddleware);
 
 module.exports = app;
