@@ -1,69 +1,68 @@
 const User = require("../models/user.js");
-const getAllUsers = async (req, res) => {
-  const users = await User.find({});
-  console.log(req.query); //url mein question mark lgane ke baad jo bhi likhenge wo question mark mein aa jayega example localhost:4000/users/all?name=i am a  query&founder=pratham kumar
+const bcrypt = require("bcrypt");
+const utils = require("../utils/features.js");
 
-  res.json({
-    success: true,
-    users,
-  });
+const login = async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email }).select("+password");
+
+  if (!user)
+    return res.status(404).json({
+      success: false,
+      message: "Invalid Email or password",
+    });
+
+  const isMatch = await bcrypt.compare(password, user.password);
+
+  if (!isMatch)
+    return res.status(404).json({
+      success: false,
+      message: "Invalid Email or password",
+    });
+
+  utils.sendCookie(user, res, `welcome back ${user.name}`, 200);
 };
+
+const getAllUsers = async (req, res) => {};
 
 const register = async (req, res) => {
   const { name, email, password } = req.body;
-  await User.create({
-    name,
-    email,
-    password,
-  });
+  let user = await User.findOne({ email });
+  if (user)
+    return res.status(404).json({
+      success: false,
+      message: "user Already Exist",
+    });
 
-  res.status(201).cookie("tempi", "lol").json({
-    success: true,
-    message: "Registered Successfully",
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  user = await User.create({ name, email, password: hashedPassword });
+
+  utils.sendCookie(user, res, "Registered Successfully", 201);
+};
+
+const getMyProfile = (req, res) => {
+  res.status(200).json({
+    sucess: true,
+    user: req.user,
   });
 };
 
-const specialFunc = (req, res) => {
-  res.json({
-    success: true,
-    message: "Just Joking",
-  });
-};
-
-const getUserDetails = async (req, res) => {
-  const { id } = req.params;
-  const user = await User.findById(id);
-
-  res.json({
-    success: true,
-    user,
-  });
-};
-
-const updateUser = async (req, res) => {
-  const { id } = req.params;
-  const user = await User.findById(id);
-
-  res.json({
-    success: true,
-    message: "updated",
-  });
-};
-const deleteUser = async (req, res) => {
-  const { id } = req.params;
-  const user = await User.findById(id);
-
-  res.json({
-    success: true,
-    message: "deleted",
-  });
+const logout = (req, res) => {
+  res
+    .status(200)
+    .cookie("token", "", { expires: new Date(Date.now()) })
+    .json({
+      sucess: true,
+      user: req.user,
+    });
 };
 
 module.exports = {
   getAllUsers,
   register,
-  specialFunc,
-  getUserDetails,
-  updateUser,
-  deleteUser,
+  getMyProfile,
+  login,
+  logout,
 };

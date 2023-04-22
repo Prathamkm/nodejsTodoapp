@@ -1,19 +1,22 @@
 const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
-  name: {
+  title: {
     type: String,
     required: true,
   },
-  email: {
+  discription: {
     type: String,
     required: true,
-    unique: true,
   },
-  password: {
-    type: String,
+  isCompleted: {
+    type: Boolean,
+    default: false,
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
-    select: false,
   },
   createdAt: {
     type: Date,
@@ -21,5 +24,5 @@ const schema = new mongoose.Schema({
   },
 });
 
-const User = mongoose.model("User", schema);
-module.exports = User;
+const Task = mongoose.model("Task", schema);
+module.exports = Task;
