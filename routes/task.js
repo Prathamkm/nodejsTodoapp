@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post("/new", middleware.isAuthenticated, controller.newTask);
 router.get("/my", middleware.isAuthenticated, controller.getMyTask);
+router.delete("/deleteall", middleware.isAuthenticated, controller.deleteAll);
 router
   .route("/:id")
   .put(middleware.isAuthenticated, controller.updateTask)

@@ -60,11 +60,22 @@ const logout = (req, res) => {
     });
 };
 
-const deleteUser = async (req, res) => {
-  cout << req.user;
-  await Task.deleteMany({ user: req.user });
-  await User.deleteOne({ _id: req.user });
-  logout();
+const deleteUser = async (req, res, next) => {
+  try {
+    res.cookie("token", "", {
+      expires: new Date(Date.now()),
+      sameSite: process.env.NODE_ENV === "Development" ? "lax" : "none",
+      secure: process.env.NODE_ENV === "Development" ? false : true,
+    });
+    await Task.deleteMany({ user: req.user._id });
+    await User.deleteOne({ email: req.user.email });
+    res.status(200).json({
+      success: true,
+      message: "User Deleted",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = {

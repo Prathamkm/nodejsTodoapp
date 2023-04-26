@@ -62,4 +62,19 @@ const deleteTask = async (req, res, next) => {
   }
 };
 
-module.exports = { newTask, getMyTask, updateTask, deleteTask };
+const deleteAll = async (req, res, next) => {
+  try {
+    const data = await Task.deleteMany({ user: req.user._id });
+    if (!data.deletedCount)
+      return next(new ErrorHandler("Task not found", 404));
+    res.status(200).json({
+      success: true,
+      message: "All Task Deleted Successfully",
+    });
+    // logout();
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { newTask, getMyTask, updateTask, deleteTask, deleteAll };
