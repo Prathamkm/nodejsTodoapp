@@ -2,6 +2,7 @@ const User = require("../models/user.js");
 const bcrypt = require("bcrypt");
 const utils = require("../utils/features.js");
 const { ErrorHandler } = require("../middleware/error.js");
+const Task = require("../models/task.js");
 
 const login = async (req, res, next) => {
   try {
@@ -59,9 +60,17 @@ const logout = (req, res) => {
     });
 };
 
+const deleteUser = async (req, res) => {
+  cout << req.user;
+  await Task.deleteMany({ user: req.user });
+  await User.deleteOne({ _id: req.user });
+  logout();
+};
+
 module.exports = {
   register,
   getMyProfile,
   login,
   logout,
+  deleteUser,
 };
